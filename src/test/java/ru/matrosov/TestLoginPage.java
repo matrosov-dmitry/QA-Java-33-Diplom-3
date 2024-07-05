@@ -16,103 +16,103 @@ import ru.matrosov.browser.YandexRule;
 import ru.matrosov.pages.HomePage;
 import ru.matrosov.pages.LoginPage;
 import ru.matrosov.pages.RegistrationPage;
-import static ru.matrosov.constant.URL.STELLAR_BURGERS_HOME_PAGE_URL;
-import static ru.matrosov.api.UserApiGenerator.randomUser;
+
 import static org.openqa.selenium.devtools.v85.network.Network.clearBrowserCookies;
+import static ru.matrosov.api.UserApiGenerator.randomUser;
+import static ru.matrosov.constant.URL.STELLAR_BURGERS_HOME_PAGE_URL;
 
 @RunWith(Parameterized.class)
 public class TestLoginPage
     {
 
-    private UserApi user = randomUser();
-    UserApiMethod userApiMethod = new UserApiMethod();
+        @Rule
+        public BrowserRule rule;
+        UserApiMethod userApiMethod = new UserApiMethod ();
+        private UserApi user = randomUser ();
 
-    @Rule
-    public BrowserRule rule;
+        public TestLoginPage(BrowserRule rule) {
+            this.rule = rule;
+        }
 
-    public TestLoginPage(BrowserRule rule) {
-        this.rule = rule;
-    }
+        @Parameterized.Parameters
+        public static Object[][] getData( ) {
+            return new Object[][]{
+                    {new YandexRule ()},
+                    {new ChromeRule ()}
+            };
+        }
 
-    @Parameterized.Parameters
-    public static Object[][] getData() {
-        return new Object[][]{
-                { new YandexRule () },
-                { new ChromeRule () }
-        };
-    }
+        @Before
+        public void setUp( ) {
+            RestAssured.baseURI = STELLAR_BURGERS_HOME_PAGE_URL;
+            userApiMethod.create (user);
+        }
 
-    @Before
-    public void setUp(){
-        RestAssured.baseURI = STELLAR_BURGERS_HOME_PAGE_URL;
-        userApiMethod.create(user);
-    }
-
-    @Test
-    @DisplayName("Вход в аккаунт по кнопке «Войти в аккаунт» на главной")
-    public void inputByButtonToEnterAccountHp(){
-        LoginPage loginPage = new LoginPage (rule.getWebDriver());
-        HomePage homePage = new HomePage(rule.getWebDriver());
+        @Test
+        @DisplayName("Вход в аккаунт по кнопке «Войти в аккаунт» на главной")
+        public void inputByButtonToEnterAccountHp( ) {
+            LoginPage loginPage = new LoginPage (rule.getWebDriver ());
+            HomePage homePage = new HomePage (rule.getWebDriver ());
 
             homePage
-                    .openHomePage()
-                    .clickOnButtonToEnterAccountHp();
+                    .openHomePage ()
+                    .clickOnButtonToEnterAccountHp ();
             loginPage
-                    .waitingForLoading()
-                    .enterEmail(user.getEmail())
-                    .enterPassword(user.getPassword())
-                    .clickOnButtonLoginInFormAuth()
-                    .checkHomePageAfterAuth();
+                    .waitingForLoading ()
+                    .enterEmail (user.getEmail ())
+                    .enterPassword (user.getPassword ())
+                    .clickOnButtonLoginInFormAuth ()
+                    .checkHomePageAfterAuth ();
+        }
+
+        @Test
+        @DisplayName("Вход в аккаунт через кнопку «Личный кабинет» на главной")
+        public void inputByPersonalAccountButtonHp( ) {
+            LoginPage loginPage = new LoginPage (rule.getWebDriver ());
+            HomePage homePage = new HomePage (rule.getWebDriver ());
+
+            homePage
+                    .openHomePage ()
+                    .clickOnPersonalAccountButtonHp ();
+            loginPage
+                    .enterEmail (user.getEmail ())
+                    .enterPassword (user.getPassword ())
+                    .clickOnButtonLoginInFormAuth ()
+                    .checkHomePageAfterAuth ();
+        }
+
+        @Test
+        @DisplayName("Вход в аккаунт через кнопку в форме регистрации")
+        public void inputByLoginButtonInFormRegistration( ) {
+            RegistrationPage registrationPage = new RegistrationPage (rule.getWebDriver ());
+            LoginPage loginPage = new LoginPage (rule.getWebDriver ());
+
+            registrationPage
+                    .openRegistrationPage ();
+            loginPage
+                    .clickOnLoginButtonInForms ()
+                    .enterEmail (user.getEmail ())
+                    .enterPassword (user.getPassword ())
+                    .checkHomePageAfterAuth ();
+        }
+
+        @Test
+        @DisplayName("Вход в аккаунт через кнопку в форме восстановления пароля")
+        public void inputByLoginButtonInFormRestorePassword( ) {
+            LoginPage loginPage = new LoginPage (rule.getWebDriver ());
+
+            loginPage
+                    .openPasswordRestorePage ()
+                    .clickOnLoginButtonInForms ()
+                    .enterEmail (user.getEmail ())
+                    .enterPassword (user.getPassword ())
+                    .clickOnButtonLoginInFormAuth ()
+                    .checkHomePageAfterAuth ();
+        }
+
+        @After
+        public void tearDown( ) {
+            userApiMethod.delete (user);
+            clearBrowserCookies ();
+        }
     }
-
-    @Test
-    @DisplayName("Вход в аккаунт через кнопку «Личный кабинет» на главной")
-    public void inputByPersonalAccountButtonHp(){
-        LoginPage loginPage = new LoginPage (rule.getWebDriver());
-        HomePage homePage = new HomePage(rule.getWebDriver());
-
-        homePage
-                .openHomePage()
-                .clickOnPersonalAccountButtonHp();
-        loginPage
-                .enterEmail(user.getEmail())
-                .enterPassword(user.getPassword())
-                .clickOnButtonLoginInFormAuth()
-                .checkHomePageAfterAuth();
-    }
-
-    @Test
-    @DisplayName("Вход в аккаунт через кнопку в форме регистрации")
-    public void inputByLoginButtonInFormRegistration(){
-        RegistrationPage registrationPage = new RegistrationPage (rule.getWebDriver());
-        LoginPage loginPage = new LoginPage (rule.getWebDriver());
-
-        registrationPage
-                .openRegistrationPage();
-        loginPage
-                .clickOnLoginButtonInForms()
-                .enterEmail(user.getEmail())
-                .enterPassword(user.getPassword())
-                .checkHomePageAfterAuth();
-    }
-
-    @Test
-    @DisplayName("Вход в аккаунт через кнопку в форме восстановления пароля")
-    public void inputByLoginButtonInFormRestorePassword(){
-        LoginPage loginPage = new LoginPage (rule.getWebDriver());
-
-        loginPage
-                .openPasswordRestorePage()
-                .clickOnLoginButtonInForms()
-                .enterEmail(user.getEmail())
-                .enterPassword(user.getPassword())
-                .clickOnButtonLoginInFormAuth()
-                .checkHomePageAfterAuth();
-    }
-
-    @After
-    public void tearDown(){
-        userApiMethod.delete(user);
-        clearBrowserCookies();
-    }
-}

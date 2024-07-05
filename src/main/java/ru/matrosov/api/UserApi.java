@@ -1,4 +1,5 @@
 package ru.matrosov.api;
+
 import lombok.*;
 
 @Getter
@@ -6,9 +7,10 @@ import lombok.*;
 @AllArgsConstructor
 @RequiredArgsConstructor
 @Builder
-public class UserApi {
+public class UserApi
+    {
 
-    String email;
-    String password;
-    String name;
-}
+        String email;
+        String password;
+        String name;
+    }

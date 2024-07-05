@@ -7,25 +7,30 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.time.Duration;
 
-public abstract class BrowserRule extends ExternalResource {
+public abstract class BrowserRule extends ExternalResource
+    {
 
-    private WebDriver webDriver;
+        private WebDriver webDriver;
 
-    public WebDriver getWebDriver(){ return webDriver; }
+        public WebDriver getWebDriver( ) {
+            return webDriver;
+        }
 
-    protected String getDriverPath() {
-        return "";
+        protected String getDriverPath( ) {
+            return "";
+        }
+
+        @Override
+        protected void before( ) {
+            System.setProperty ("webdriver.chrome.driver", getDriverPath ());
+            ChromeOptions options = new ChromeOptions ();
+            options.addArguments ("--remote-allow-origins=*");
+            webDriver = new ChromeDriver (options);
+            webDriver.manage ().timeouts ().implicitlyWait (Duration.ofSeconds (25));
+        }
+
+        @Override
+        protected void after( ) {
+            webDriver.quit ();
+        }
     }
-
-    @Override
-    protected void before(){
-        System.setProperty("webdriver.chrome.driver", getDriverPath());
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--remote-allow-origins=*");
-        webDriver = new ChromeDriver(options);
-        webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(25));
-    }
-
-    @Override
-    protected void after(){ webDriver.quit(); }
-}
