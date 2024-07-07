@@ -93,6 +93,7 @@ public class TestLoginPage
                     .clickOnLoginButtonInForms ()
                     .enterEmail (user.getEmail ())
                     .enterPassword (user.getPassword ())
+                    .clickOnButtonLoginInFormAuth ()
                     .checkHomePageAfterAuth ();
         }
 

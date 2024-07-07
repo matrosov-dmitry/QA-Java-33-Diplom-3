@@ -8,9 +8,9 @@ import static io.restassured.RestAssured.given;
 public class UserApiMethod
     {
 
-        private static final String CREATE_USER = "/ru/matrosov/api/auth/register";
-        private static final String LOGIN_USER = "/ru/matrosov/api/auth/login";
-        private static final String DELETE_CHANGING_USER = "/ru/matrosov/api/auth/user";
+        private static final String CREATE_USER = "/api/auth/register";
+        private static final String LOGIN_USER = "/api/auth/login";
+        private static final String DELETE_CHANGING_USER = "/api/auth/user";
 
         @Step("Send POST request to api/auth/register - создание пользователя")
         public Response create(UserApi user) {
